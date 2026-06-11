@@ -1,0 +1,16 @@
+[[toolkit.project.average_finding_age]]
+    title="AVERAGE AGE team"
+    from_tag="foo OR bar AND NOT baz"
+    output_file="output/age-team.json"
+    log_file="log/age-team.txt"
+    debug=false
+    min-crit="critical"
+    priority=1000
+[[toolkit.project.count_vulnerable]]
+    title="ABSOLUTE VULNERABLE team"
+    from_tag="foo OR bar AND NOT baz"
+    output_file="output/vuln-team.json"
+    log_file="log/vuln-team.txt"
+    debug=false
+    min-crit="critical"
+    priority=1000
