@@ -1,0 +1,77 @@
+[project]
+name = "dtracktoolkit"
+version = "5.1.0"
+description = "CLI Tool used to trigger different actions via Dependency Tracker API. Can also be used as python library."
+dependencies = [
+    "loguru>=0.6.0",
+    "pyfiglet>=0.8.post1",
+    "jsonschema>=4.17.0",
+    "furl>=2.1.3",
+    "lark>=1.1.9",
+    "httpx>=0.27.2",
+    "pydantic>=2.10.3",
+    "toml>=0.10.2",
+    "pydantic-settings>=2.8.1",
+    "python-decouple>=3.8",
+    "requests"]
+requires-python = ">=3.10"
+[project.optional-dependencies]
+composer = ["toml>=0.10.2"]
+test = [
+    "pytest>=7.2.2",
+    "coverage>=7.3.0",
+    "freezegun>=1.2.2",
+    "pytest-asyncio>=0.25.2",
+    "respx>=0.22.0",
+    "black>=25.1.0",
+    "pytest-cov>=6.0.0"]
+sbom = ["cyclonedx-bom>=3.11.0"]
+[project.scripts]
+dtracktoolkit = "dtracktoolkit.__main__:binary_main"
+
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
+
+[tool.pdm]
+distribution = true
+
+[tool.pdm.dev-dependencies]
+dev = ["pytest-cov>=6.0.0"]
+
+[tool.flake8]
+ignore = ["E226","E302","E501", "W504", "W503"]
+max-line-length = 100
+exclude = ["tests/*"]
+max-complexity = 10
+
+# https://pycqa.github.io/isort/docs/configuration/black_compatibility.html
+[tool.isort]
+profile = "black"
+py_version = 39
+
+# https://black.readthedocs.io/en/stable/usage_and_configuration/the_basics.html
+# https://black.readthedocs.io/en/stable/the_black_code_style/current_style.html#strings
+[tool.black]
+target-version = ["py311"]
+line-length = 88
+
+# https://pep8.readthedocs.io/en/release-1.7.x/intro.html#configuration
+[tool.autopep8]
+max_line_length = 88
+
+# https://bandit.readthedocs.io/en/latest/config.html
+[tool.bandit]
+exclude_dirs = ["tests"]
+
+[tool.pytest.ini_options]
+asyncio_default_fixture_loop_scope = "module"
+
+# with 'pdm run bomupdate' upload an updated sbom to dependency track, fetch api_key in .env template
+[tool.pdm.scripts]
+_.env_file = ".env"
+bomupdate = {shell='cyclonedx-py environment -o cyclonedx.xml && curl -i -X "POST" "$(grep -Po "(?<=base_url=).*" ./.env | sed s/\"//g)api/v1/bom" -H "Content-Type: multipart/form-data" -H "X-Api-Key: $(grep -Po "(?<=api_key=).*" ./.env | sed s/\"//g)" -F "project=3aca596b-b204-47f1-8bae-ec98bd0372b4" -F "bom=@./cyclonedx.xml" --cacert pukirootca2022rsa.crt'}
+wipe_logs = {shell='rm -rf log/*.log'}
+pytest = {shell='python -m pytest tests/'}
+coverage = {shell='coverage run --source=. -m pytest tests/ && coverage report --omit=tests/*'}
+
