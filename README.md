@@ -1,10 +1,11 @@
 # Dependency-Tracker-Toolkit
+made by [@elastic-pangolin](https://github.com/elastic-pangolin) [@Selfie21](https://github.com/Selfie21) [@Momo-Sumomo](https://github.com/Momo-Sumomo) and others
+
 CLI Tool used to trigger different actions via Dependency Tracker API
 
 ## Requirements
 + Python3.10
 + Dependency-Track api-key
-
 
 ## Setup
 ### User
